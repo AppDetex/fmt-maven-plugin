@@ -128,11 +128,10 @@ public abstract class AbstractFMT extends AbstractMojo {
 
     try (Stream<Path> paths = Files.walk(Paths.get(directory.getPath()))) {
       paths
-          .collect(Collectors.toList())
-          .parallelStream()
+          .parallel()
           .filter(Files::isRegularFile)
           .map(Path::toFile)
-          .filter((file) -> getFileFilter().accept(file))
+          .filter(file -> getFileFilter().accept(file))
           .forEach(file -> formatSourceFile(file, formatter));
     } catch (IOException exception) {
       throw new MojoFailureException(exception.getMessage());
